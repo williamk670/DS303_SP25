@@ -1,7 +1,7 @@
 ---
 title: "Practice: Simple Linear Regression"
 author: 
-  - "Student Name"
+  - "William Kim"
   - "DS303, SP25"
   - "Prof. Amber Camp"
 date: 1/17/25
@@ -34,7 +34,7 @@ What is the difference between *y* = *b~0~* + *b~1~x* and *y* = *mx* + *b*, and 
 
 #### Answer:
 
-(write your answer here)
+The equation y = *b~0~* + b1x is typically used in statistics and data science for regression analysis, where b0 represents the intercept and b1​ represents the slope or the effect of x on y. On the other hand, y = mx + b is commonly used in algebra and geometry to represent a straight line, where m is the slope and b is the y-intercept. You would use y = *b~0~* + b1x when analyzing data or modeling relationships, and y = mx + b when graphing or solving basic linear equations.
 
 ### Question 2
 
@@ -42,15 +42,19 @@ Think back to our class discussion and your previous studies in math. Tell me be
 
 #### Answer:
 
-(write your answer here)
+y = dependent variable
+
+x = independent variable
+
+The b0 represents the intercept and b1​ represents the slope or the effect of x on y.
 
 ## Let's try it
 
 Let's start by loading the `MASS` and `ISLR2` packages, which are very large collections of data sets and functions. You may need to install `ISLR2` and `lme4`.
 
 ```{r, echo = FALSE, message = FALSE}
-# install.packages("ISLR2")
-# install.packages("lme4")
+install.packages("ISLR2")
+install.packages("lme4")
 
 library(MASS)
 library(ISLR2)
@@ -66,13 +70,20 @@ The `ISLR2` library contains the `Boston` data set, which records `medv` (median
 You can just call upon the data (it's already in the package). I'll get you started, but show me below how you'd explore the data even further by adding code in the below code chunk.
 
 ```{r}
+data("Boston")
 head(Boston)
+str(Boston)
+summary(Boston)
 
+sum(is.na(Boston))
 ```
 
 We learned in class that we can apply a simple linear regression using `lm`. Here is the basic format:
 
 ```{r}
+df <- as.data.fr
+
+class(df)
 model <- lm(y ~ x, data=df)
 ```
 
@@ -81,12 +92,14 @@ model <- lm(y ~ x, data=df)
 Use the above basic format to create a linear regression model to predict the **median home value** (medv) based on the **percentage of lower status population** (lstat), using the data from the 'Boston' dataset. Assign it to the variable `lm.model`.
 
 ```{r}
+lm.model <- lm(medv ~ lstat, data=Boston)
 
 ```
 
 If you set it up right, you should be able to run your model name in the below code chunk and view the basic model output. Give it a try:
 
 ```{r}
+lm.model
 
 ```
 
@@ -110,9 +123,13 @@ What additional information do you get from this summary of the model output?
 
 #### Answer
 
-(write your answer here)
+The model output provides the estimated coefficients for the regression equation:
 
-## confint() and predict()
+y = b0+b1x
+
+where b0​ is the intercept and b1​ is the coefficient for lstat.
+
+This tells us how changes in lstat (percentage of lower-status population) affect medv(median home value). If the coefficient b1​ is negative, it suggests that higher percentages of lower status households are associated with lower median home values.
 
 In order to obtain a confidence interval for the coefficient estimates, we can use the `confint()` command. The `predict()` function can be used to produce confidence intervals and prediction intervals for the prediction of `medv` for a given value of `lstat`. Run these and see if you can figure out what it is telling you.
 
@@ -130,7 +147,15 @@ What do you think the above `confint()` and `predict()` information means? It's 
 
 #### Answer
 
-(write your answer here)
+The summary function provides:
+
+-   **Coefficients**: Estimates for b0​ and b1, including standard errors and significance levels.
+
+-   **R-squared**: Measures how well the model explains the variability in the dependent variable.
+
+-   **p-value**: Determines if the relationship between medv and lstat is statistically significant.
+
+-   **Residual Standard Error**: Measures how well the model fits the data.
 
 ## Visualizing
 
@@ -146,6 +171,15 @@ abline(lm.model)
 Can you convert the above code chunk to `ggplot`? Try below. Have fun with editing the appearance of your plot if you'd like :)
 
 ```{r}
+library(ggplot2)
+
+ggplot(Boston, aes(x = lstat, y = medv)) +
+  geom_point(color = "blue", alpha = 0.5) +
+  geom_smooth(method = "lm", col = "red") +
+  labs(title = "Linear Regression of Median Home Value vs. Lower Status Percentage",
+       x = "Lower Status Percentage (lstat)",
+       y = "Median Home Value (medv)") +
+  theme_minimal()
 
 ```
 
@@ -172,7 +206,9 @@ What variables are you interested in exploring using a linear regression? Just p
 
 #### Answer
 
-(write your answer here)
+I am interested in exploring the relationship between the average number of rooms per dwelling (rm) and median home value (medv). My research question is:
+
+"Does an increase in the number of rooms in a home lead to higher median home values?"
 
 ### Question 10
 
@@ -181,8 +217,9 @@ What variables are you interested in exploring using a linear regression? Just p
 Build and run your model, examine the model output:
 
 ```{r}
-
-
+summary(lm.model)
+lm.rm <- lm(medv ~ rm, data=Boston)
+summary(lm.rm)
 
 
 ```
@@ -193,7 +230,9 @@ Explain what you found in plain English. Do your best.
 
 #### Answer
 
-(write your answer here)
+The regression analysis shows a positive relationship between the number of rooms per dwelling (rm) and the median home value (medv). The coefficient for rm is positive, indicating that as the number of rooms increases, the median home value also tends to rise.
+
+The model’s R-squared value suggests how well rm explains medv. If it is high (e.g., above 0.5), rm is a strong predictor of medv. Additionally, the p-value for rm indicates statistical significance—if it is below 0.05, the relationship is significant.
 
 ## The end!
 
